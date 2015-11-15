@@ -1,3 +1,5 @@
+import logging
+
 from twilio.rest import TwilioRestClient
 
 from django.conf import settings
@@ -5,6 +7,8 @@ from django.db import models
 from django.core.urlresolvers import reverse
 
 client = TwilioRestClient(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
+
+logger = logging.getLogger(__name__)
 
 class TwilioNumber(models.Model):
 	number = models.CharField(max_length=20)
@@ -30,9 +34,11 @@ class Action(models.Model):
 
 
 	def perform(self, user_number):
+		logger.error(self.audio_file.url)
 		call = client.calls.create(
 			to=user_number.number, 
 			from_=self.twilio_number.number, 
+			method='GET',
 			url=self.audio_file.url,
 			status_callback=self.get_callback_url()
 		) 

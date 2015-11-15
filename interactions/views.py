@@ -1,3 +1,5 @@
+import logging
+
 from django_twilio.decorators import twilio_view
 from django_twilio.request import decompose
 from twilio.twiml import Response 
@@ -9,6 +11,8 @@ from django.http import HttpResponse
 from interactions.models import Inbound, Outbound, TwilioNumber, User, Action
 
 client = TwilioRestClient(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
+
+logger = logging.getLogger(__name__)
 
 @twilio_view
 def sms(request):

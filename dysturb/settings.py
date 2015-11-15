@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'interactions',
+    'storages',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -147,3 +148,9 @@ BASE_URL = 'http://dysturb.pagekite.me'
 
 if not DEBUG:
     BASE_URL = 'http://warm-cove-6245.herokuapp.com'
+
+AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'

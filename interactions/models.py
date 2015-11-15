@@ -33,7 +33,7 @@ class Action(models.Model):
 		call = client.calls.create(
 			to=user_number.number, 
 			from_=self.twilio_number.number, 
-			url="http://lmj.io/projects/dysturb/sample-audio.mp3", #replace this when s3 is setup
+			url=self.audio_file.url,
 			status_callback=self.get_callback_url()
 		) 
 		
@@ -94,7 +94,7 @@ class Outbound(models.Model):
 		return 'outbound to %s: %s' % (self.to_number, self.twilio_sid)
 
 	def send_followup(self): #edit this: followup should only send subscribe message if person is not subscribed.
-		followup = "Thanks for your interest in global action against climate change. To join future interventions, respond with \"subscribe\" to this message. Learn more at dysturb.com." 
+		followup = "Thanks for your interest in global action against climate change. Snap it, post it, share it. #ReframeClimate dyturb.com/paris" 
 	
 		if self.action.followup:
 			followup = self.action.followup

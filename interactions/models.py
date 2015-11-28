@@ -18,10 +18,18 @@ class Followup(models.Model):
 	def __unicode__(self):
 		return self.name
 
+class Fallback(models.Model):
+	name = models.CharField(max_length=50)
+	body = models.TextField()
+
+	def __unicode__(self):
+		return self.name
+
 class TwilioNumber(models.Model):
 	number = models.CharField(max_length=20)
 	alpha_id = models.BooleanField(default=False)
 	followup = models.ForeignKey(Followup, null=True)
+	fallback = models.ForeignKey(Fallback, null=True)
 
 	def __unicode__(self):
 		return self.number 

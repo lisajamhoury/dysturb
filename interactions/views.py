@@ -42,11 +42,8 @@ def sms(request):
 		inbound.save()
 
 	except Action.DoesNotExist:
-		# Code here to send the catchall message
-		fallback_message = "I didn't quite get that. Please check your spelling and try again."
-
 		message = client.messages.create(
-				body=fallback_message,
+				body=twilio_number.fallback.body,
 				to=user.number,
 				from_=twilio_number.number 
 			)

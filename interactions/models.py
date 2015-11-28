@@ -10,9 +10,18 @@ client = TwilioRestClient(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKE
 
 logger = logging.getLogger(__name__)
 
+
+class Followup(models.Model):
+	name = models.CharField(max_length=50)
+	body = models.TextField()
+
+	def __unicode__(self):
+		return self.name
+
 class TwilioNumber(models.Model):
 	number = models.CharField(max_length=20)
 	alpha_id = models.BooleanField(default=False)
+	followup = models.ForeignKey(Followup, null=True)
 
 	def __unicode__(self):
 		return self.number 
@@ -108,12 +117,16 @@ class Outbound(models.Model):
 		return 'outbound to %s: %s' % (self.to_number, self.twilio_sid)
 
 	def send_followup(self): 
-		followup = "Thanks for your interest in global action against climate change. Snap it, post it, share it. #ReframeClimate dyturb.com" 
+
+		followup = None
+
+		if self.from_number.followup:
+			followup = self.from_number.followup.body
 	
 		if self.action.followup:
 			followup = self.action.followup
 
-		if not self.followup_sent:	
+		if not self.followup_sent and followup is not None:	
 			message = client.messages.create(
 				body=followup,
 				to=self.to_number.number,

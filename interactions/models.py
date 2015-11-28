@@ -12,9 +12,17 @@ logger = logging.getLogger(__name__)
 
 class TwilioNumber(models.Model):
 	number = models.CharField(max_length=20)
+	alpha_id = models.BooleanField(default=False)
 
 	def __unicode__(self):
 		return self.number 
+
+	def get_caller_id(self):
+		if self.alpha_id:
+			return 'Dysturb'
+
+		return self.number 
+
 
 class Action(models.Model):
 	twilio_number = models.ForeignKey(TwilioNumber)
@@ -99,8 +107,8 @@ class Outbound(models.Model):
 	def __unicode__(self):
 		return 'outbound to %s: %s' % (self.to_number, self.twilio_sid)
 
-	def send_followup(self): #edit this: followup should only send subscribe message if person is not subscribed.
-		followup = "Thanks for your interest in global action against climate change. Snap it, post it, share it. #ReframeClimate dyturb.com/paris" 
+	def send_followup(self): 
+		followup = "Thanks for your interest in global action against climate change. Snap it, post it, share it. #ReframeClimate dyturb.com" 
 	
 		if self.action.followup:
 			followup = self.action.followup
@@ -109,7 +117,7 @@ class Outbound(models.Model):
 			message = client.messages.create(
 				body=followup,
 				to=self.to_number.number,
-				from_='Dysturb'
+				from_=self.from_number.get_caller_id()
 			)
 
 			self.followup_sent = True

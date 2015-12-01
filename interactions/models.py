@@ -59,23 +59,31 @@ class Action(models.Model):
 
 
 	def perform(self, user_number):
-		logger.error(self.audio_file.url)
-		call = client.calls.create(
-			to=user_number.number, 
-			from_=self.twilio_number.number, 
-			method='GET',
-			url=self.audio_file.url,
-			status_callback=self.get_callback_url()
-		) 
-		
-		outbound = Outbound(
-			from_number=self.twilio_number,
-			to_number=user_number,
-			action=self,
-			twilio_sid=call.sid 
-		)
-		
-		outbound.save()
+		if self.audio_file: 
+			call = client.calls.create(
+				to=user_number.number, 
+				from_=self.twilio_number.number, 
+				method='GET',
+				url=self.audio_file.url,
+				status_callback=self.get_callback_url()
+			) 
+			
+			outbound = Outbound(
+				from_number=self.twilio_number,
+				to_number=user_number,
+				action=self,
+				twilio_sid=call.sid 
+			)
+			
+			outbound.save()
+
+		if not self.audio_file:
+			message = client.messages.create(
+				body=self.body,
+				to=user_number.number,
+				from_=self.twilio_number.number
+			)
+
 
 
 class User(models.Model):

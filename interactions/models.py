@@ -115,7 +115,11 @@ class Inbound(models.Model):
 	twilio_sid = models.CharField(max_length=200, blank=True)
 
 	def __unicode__(self):
-		return 'inbound on %s from %s: %s (%s)' % (self.created.strftime('%m/%d/%Y'), self.from_number, self.body, self.twilio_sid)
+		return 'inbound on %s from %s: %s (%s)' % (self.created_formatted, self.from_number, self.body, self.twilio_sid)
+
+	@property 
+	def created_formatted(self):
+		return self.created.strftime('%m/%d/%Y')		
 
 	@classmethod
 	def create_from_twilio_request(cls, twilio_request):

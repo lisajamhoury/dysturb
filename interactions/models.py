@@ -30,6 +30,7 @@ class TwilioNumber(models.Model):
 	alpha_id = models.BooleanField(default=False)
 	followup = models.ForeignKey(Followup, null=True)
 	fallback = models.ForeignKey(Fallback, null=True)
+	verified_cid = models.CharField(max_length=20, null=True, blank=True)
 
 	def __unicode__(self):
 		return self.number 
@@ -62,7 +63,7 @@ class Action(models.Model):
 		if self.audio_file: 
 			call = client.calls.create(
 				to=user_number.number, 
-				from_=self.twilio_number.number, 
+				from_=self.twilio_number.verified_cid, 
 				method='GET',
 				url=self.audio_file.url,
 				status_callback=self.get_callback_url()

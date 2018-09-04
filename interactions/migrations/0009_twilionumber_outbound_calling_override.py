@@ -7,13 +7,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('interactions', '0005_auto_20151108_0258'),
+        ('interactions', '0008_auto_20151128_2121'),
     ]
 
     operations = [
         migrations.AddField(
             model_name='twilionumber',
-            name='alpha_id',
-            field=models.BooleanField(default=False),
+            name='outbound_calling_override',
+            field=models.CharField(help_text=b'Use this field to add an outbound calling number for shortcodes', max_length=20, blank=True),
         ),
     ]

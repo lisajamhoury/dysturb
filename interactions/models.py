@@ -1,12 +1,12 @@
 import logging
 
-from twilio.rest import TwilioRestClient
+from twilio.rest import Client
 
 from django.conf import settings
 from django.db import models
 from django.core.urlresolvers import reverse
 
-client = TwilioRestClient(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
+client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
 
 logger = logging.getLogger(__name__)
 
@@ -27,6 +27,7 @@ class Fallback(models.Model):
 
 class TwilioNumber(models.Model):
 	number = models.CharField(max_length=20)
+	outbound_calling_override = models.CharField(max_length=20, blank=True, help_text='Use this field to add an outbound calling number for shortcodes')
 	alpha_id = models.BooleanField(default=False)
 	followup = models.ForeignKey(Followup, null=True)
 	fallback = models.ForeignKey(Fallback, null=True)
@@ -60,12 +61,15 @@ class Action(models.Model):
 
 	def perform(self, user_number):
 		if self.audio_file: 
+			from_number = self.twilio_number.outbound_calling_override \
+				if self.twilio_number.outbound_calling_override else self.twilio_number.number
 			call = client.calls.create(
 				to=user_number.number, 
-				from_=self.twilio_number.number, 
+				from_=from_number, 
 				method='GET',
 				url=self.audio_file.url,
-				status_callback=self.get_callback_url()
+				status_callback=self.get_callback_url(),
+				if_machine='Hangup'
 			) 
 			
 			outbound = Outbound(

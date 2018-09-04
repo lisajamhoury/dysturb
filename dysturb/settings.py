@@ -148,10 +148,10 @@ STATICFILES_DIRS = (
 TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID')
 TWILIO_AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN')
 
-BASE_URL = 'http://dysturb.pagekite.me'
+BASE_URL = 'https://75a127d8.ngrok.io'
 
 if not DEBUG:
-    BASE_URL = 'http://warm-cove-6245.herokuapp.com'
+    BASE_URL = 'https://warm-cove-6245.herokuapp.com'
 
 AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
